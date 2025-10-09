@@ -1,0 +1,102 @@
+:root {
+  --bg: #1e1e2f;
+  --bg-secondary: #2a2a3d;
+  --text: #f1f1f1;
+  --text-muted: #cccccc;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --border: #3a3a4d;
+}
+
+.questions-container {
+  max-width: 850px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--text);
+}
+
+fieldset {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+legend {
+  font-weight: bold;
+  color: var(--text-muted);
+  padding: 0 6px;
+}
+
+select,
+input[type="file"] {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  font-size: 15px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+select option {
+  background: var(--bg);
+  color: var(--text);
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 16px;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+.question-card {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.question-header h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.question-card img {
+  max-width: 100%;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+
+.question-card p {
+  margin: 6px 0;
+  color: var(--text-muted);
+}
+
+.scrollable-questions {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 1rem;
+  padding-right: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+

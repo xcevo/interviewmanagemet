@@ -1,0 +1,125 @@
+:root {
+  --bg: #1e1e2f;
+  --bg-secondary: #2a2a3d;
+  --text: #f1f1f1;
+  --text-muted: #cccccc;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --border: #3a3a4d;
+}
+
+.categories-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: var(--bg-secondary);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  color: var(--text);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.categories-container h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+}
+
+.add-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.add-form input {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+}
+
+.add-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.add-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.add-form button {
+  padding: 10px 16px;
+  background: var(--accent);
+  border: none;
+  color: white;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.add-form button:hover {
+  background: var(--accent-hover);
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 10px;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: background 0.3s ease;
+}
+
+.category-item:hover {
+  background-color: #33334a;
+}
+
+.category-item span {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.category-item input {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 15px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.actions button:hover {
+  color: var(--accent);
+}

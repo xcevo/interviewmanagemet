@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv
+venv
+
+# frontend
+
+inter-front/node_modules
+inter-front/.env
+inter-front/.env.production
+
+# VS Code settings (optional)
+.vscode/

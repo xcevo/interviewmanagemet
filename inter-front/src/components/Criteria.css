@@ -1,0 +1,178 @@
+:root {
+  --bg: #1e1e2f;
+  --bg-secondary: #2a2a3d;
+  --text: #f1f1f1;
+  --text-muted: #bbbbbb;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --border: #3a3a4d;
+}
+
+.criteria-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: 100%;
+  padding: 1rem;
+}
+
+.criteria-layout {
+  display: flex;
+  gap: 2rem;
+  height: calc(100vh - 120px); /* Adjust based on your header/sidebar height */
+  overflow: hidden;
+}
+.criteria-container h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.criteria-list {
+  margin-bottom: 30px;
+}
+
+.criteria-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.criteria-card h4,
+.criteria-card p {
+  margin: 0 0 4px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.icon-btn {
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: var(--accent);
+}
+
+.icon-btn.delete {
+  color: var(--danger);
+}
+
+.icon-btn.delete:hover {
+  color: var(--danger-hover);
+}
+
+.criteria-form {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+
+.criteria-form h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--text);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.form-group select option {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.fieldset {
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.fieldset legend {
+  font-weight: bold;
+  padding: 0 6px;
+  color: var(--text-muted);
+}
+
+.difficulty-inputs {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-weight: 500;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+.scrollable-criteria-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  border-right: 1px solid var(--border);
+}
+
+/* Right: Form */
+.criteria-form-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Style scrollbars */
+.scrollable-criteria-list::-webkit-scrollbar,
+.criteria-form-container::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollable-criteria-list::-webkit-scrollbar-thumb,
+.criteria-form-container::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 3px;
+}
+.scrollable-criteria-list::-webkit-scrollbar-track,
+.criteria-form-container::-webkit-scrollbar-track {
+  background: transparent;
+}
