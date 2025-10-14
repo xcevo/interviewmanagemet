@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import Flask,request,send_from_directory
 from flask_cors import CORS
 from pymongo import MongoClient
 from categories import categories_bp
@@ -10,6 +10,7 @@ from bson import ObjectId
 import json
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+import os
 
 
 # Custom JSON Encoder for Flask
@@ -31,6 +32,19 @@ app.config["JWT_COOKIE_SAMESITE"] = "Strict"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=3)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=3)
 jwt = JWTManager(app)  
+
+@app.route('/')
+def serve_react():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static_file(path):
+    file_path = os.path.join(app.static_folder, path)
+    if os.path.exists(file_path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+
 
 app.json_encoder = MongoJSONEncoder
 
