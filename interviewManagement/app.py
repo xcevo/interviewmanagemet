@@ -1,16 +1,17 @@
-from flask import Flask,request
+from flask import Flask,request,send_from_directory
 from flask_cors import CORS
+from interview import interview_bp
 from pymongo import MongoClient
 from categories import categories_bp
 from questions import questions_bp
 from users import users_bp
 from auth import auth_bp
 from criteria import criteria_bp
-from interview import interview_bp
 from bson import ObjectId
 import json
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+import os
 from voice import VOICE_BP
 
 
@@ -21,7 +22,8 @@ class MongoJSONEncoder(json.JSONEncoder):
             return str(obj)  # Convert ObjectId to string
         return super().default(obj)
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_folder='build', static_url_path='/')
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
 app.secret_key = 'your_secret_key'
@@ -33,6 +35,19 @@ app.config["JWT_COOKIE_SAMESITE"] = "Strict"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=3)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=3)
 jwt = JWTManager(app)  
+
+@app.route('/')
+def serve_react():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static_file(path):
+    file_path = os.path.join(app.static_folder, path)
+    if os.path.exists(file_path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+
 
 app.json_encoder = MongoJSONEncoder
 
