@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { setTokens, logout } from '../utils/auth';
 
+
+const baseURL = process.env.REACT_APP_API_BASE_URL ;
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL,
   withCredentials: true,
 });
 
@@ -24,7 +26,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const res = await axios.post('http://localhost:5000/auth/refresh', {}, {
+        const res = await axios.post(`${baseURL}auth/refresh`, {}, {
           withCredentials: true,
         });
 

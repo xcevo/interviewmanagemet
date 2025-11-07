@@ -238,3 +238,96 @@ def get_questions_by_interview_name():
         "questions": all_questions,
         "message": f"Fetched {len(all_questions)} questions"
     }), 200
+
+
+@users_bp.route('/update-interview', methods=['POST'])
+@jwt_required()
+def update_interview():
+    try:
+        candidate_id = get_jwt_identity()
+        data = request.get_json()
+
+        if not data or "interview_name" not in data or "new_date" not in data or "new_time" not in data:
+            return jsonify({"error": "Fields required: interview_name, new_date, new_time"}), 400
+
+        interview_name = str(data["interview_name"]).strip()
+        new_date = str(data["new_date"]).strip()
+        new_time = str(data["new_time"]).strip()
+
+        db = current_app.db
+        scheduler_collection = db["users scheduler"]
+        criteria_collection = db["criteria"]
+
+        # find candidate’s record
+        candidate = scheduler_collection.find_one({"candidateId": candidate_id})
+        if not candidate:
+            return jsonify({"error": "Candidate not found"}), 404
+
+        interviews = candidate.get("interviews", [])
+        interview_to_update = None
+
+        # find matching interview
+        for interview in interviews:
+            if interview.get("interview_name") == interview_name:
+                interview_to_update = interview
+                break
+
+        if not interview_to_update:
+            return jsonify({"error": "Interview not found"}), 404
+
+        # ---- 🔍 Check criteria validity ----
+        criteria_id = interview_to_update.get("criteria_id")
+
+        # ✅ if criteria_id missing, try finding criteria by interview_name
+        if not criteria_id:
+            criteria = criteria_collection.find_one({"name": interview_name})
+            if not criteria:
+                return jsonify({"error": "Associated criteria not found"}), 400
+        else:
+            criteria = criteria_collection.find_one({"_id": ObjectId(criteria_id)})
+            if not criteria:
+                return jsonify({"error": "Criteria not found"}), 404
+
+        valid_to = criteria.get("valid_to")
+        if valid_to:
+            try:
+                valid_to_date = valid_to if isinstance(valid_to, datetime) else datetime.strptime(valid_to, "%Y-%m-%d")
+            except ValueError:
+                return jsonify({"error": "Invalid valid_to format in criteria"}), 400
+
+            # ---- 🕒 Check both: current date and new interview date ----
+            current_date = datetime.now().date()
+
+            try:
+                new_interview_date = datetime.strptime(new_date, "%Y-%m-%d").date()
+            except ValueError:
+                return jsonify({"error": "new_date must be in YYYY-MM-DD format"}), 400
+
+            # 1️⃣ current time must be within criteria validity
+            if current_date > valid_to_date.date():
+                return jsonify({"error": "Interview update period has expired (criteria validity over)"}), 403
+
+            # 2️⃣ new interview date must also be within validity window
+            if new_interview_date > valid_to_date.date():
+                return jsonify({"error": "Interview cannot be scheduled beyond criteria validity"}), 400
+
+        # ---- ✅ Update interview details ----
+        interview_to_update["interview_date"] = new_date
+        interview_to_update["interview_time"] = new_time
+
+        scheduler_collection.update_one(
+            {"candidateId": candidate_id},
+            {"$set": {"interviews": interviews}}
+        )
+
+        return jsonify({
+            "message": "Interview updated successfully",
+            "updated_interview": {
+                "interview_name": interview_name,
+                "interview_date": new_date,
+                "interview_time": new_time
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
