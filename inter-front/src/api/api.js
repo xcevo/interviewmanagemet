@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { setTokens, logout } from '../utils/auth';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const api = axios.create({
-  API_BASE_URL,
+  baseURL: 'http://localhost:5000',
   withCredentials: true,
 });
 
@@ -25,7 +24,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {}, {
+        const res = await axios.post('http://localhost:5000/auth/refresh', {}, {
           withCredentials: true,
         });
 
@@ -90,3 +89,6 @@ export const updateCandidate = (id, data) =>
 
 export const deleteCandidate = (id) =>
   api.delete(`/users/candidate/${id}`);
+export const fetchValidity = () => api.get('/users/validity');
+export const createValidity = (data) => api.post('/users/validity', data);
+export const updateValidityWindow = (id, data) => api.put(`/users/validity/${id}`, data);

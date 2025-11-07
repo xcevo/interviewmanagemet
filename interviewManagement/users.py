@@ -35,37 +35,42 @@ def upload_file():
 
         data = pd.read_excel(temp_file_path)
 
-        required_columns = ["candidateId", "name", "email", "phone", "interview_name", "interview_date", "interview_time"]
+        # ✅ Only require these columns now
+        required_columns = ["candidateId", "name", "email", "phone", "interview_name"]
         if not all(col in data.columns for col in required_columns):
             os.remove(temp_file_path)
             return jsonify({"error": f"File must contain columns: {', '.join(required_columns)}"}), 400
 
         db = current_app.db
         collection = db[COLLECTION_NAME]
-        upserted_ids = []
+        criteria_collection = db.criteria
 
-        # Group by candidateId for multiple rows of same user in same file
+        # ✅ Load *all* valid criteria (not just current admin’s)
+        valid_criteria = list(criteria_collection.find({}, {"name": 1}))
+        valid_interview_names = {c["name"] for c in valid_criteria}
+
+        upserted_ids = []
         grouped = data.groupby("candidateId")
 
         for candidate_id, group in grouped:
             candidate_id = str(candidate_id).strip()
 
-            # Build list of interviews for this candidate
+            # ✅ Filter interviews based on valid criteria names only
             interviews = []
             for _, row in group.iterrows():
-                interviews.append({
-                    "interview_name": str(row["interview_name"]),
-                    "interview_date": str(row["interview_date"]),
-                    "interview_time": str(row["interview_time"])
-                })
+                interview_name = str(row["interview_name"]).strip()
+                if interview_name in valid_interview_names:
+                    interviews.append({"interview_name": interview_name})
 
-            # Pick first row for user info
+            # Skip candidate if no valid interviews remain
+            if not interviews:
+                continue
+
             first_row = group.iloc[0]
 
             existing_user = collection.find_one({"candidateId": candidate_id, "uploaded_by": current_admin})
 
             if existing_user:
-                # Append new interviews (avoid duplicates by comparing dicts)
                 existing_interviews = existing_user.get("interviews", [])
                 for interview in interviews:
                     if interview not in existing_interviews:
@@ -76,7 +81,6 @@ def upload_file():
                     {"$set": {"interviews": existing_interviews}}
                 )
             else:
-                # New user → generate password
                 user_doc = {
                     "candidateId": candidate_id,
                     "name": str(first_row["name"]),

@@ -80,6 +80,7 @@
   border-radius: 8px;
   padding: 20px;
   border: 1px solid var(--border);
+  max-width: 560px;
 }
 
 .criteria-form h3 {
@@ -175,4 +176,33 @@ button:hover {
 .scrollable-criteria-list::-webkit-scrollbar-track,
 .criteria-form-container::-webkit-scrollbar-track {
   background: transparent;
+}
+
+
+
+/* ✨ New: compact grid helpers */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.two-col .form-group { margin-bottom: 0; }
+.inline { display: grid; gap: 12px; }
+
+/* make date / number inputs align nicely */
+.form-row { display: grid; gap: 12px; }
+
+/* Right panel width control */
+.criteria-form-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Responsive: stack on small widths */
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; }
+  .criteria-form { max-width: 100%; }
 }

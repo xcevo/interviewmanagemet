@@ -40,7 +40,7 @@ function Users() {
       loadCandidates();
       setFile(null);
     } catch (err) {
-      alert("Upload failed.");
+      alert(err?.response?.data?.error || err?.message || "Upload failed.");
     } finally {
       setLoading(false);
     }

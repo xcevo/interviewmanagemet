@@ -11,5 +11,8 @@ inter-front/node_modules
 inter-front/.env
 inter-front/.env.production
 
+
+.env
+
 # VS Code settings (optional)
 .vscode/

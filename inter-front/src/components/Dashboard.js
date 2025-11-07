@@ -4,9 +4,11 @@ import Categories from './Categories';
 import Criteria from './Criteria';
 import Questions from './Questions';
 import Users from './Users';
+import Validity from './Validity';
 
 function Dashboard() {
   const [view, setView] = useState('categories');
+  
 
   const renderContent = () => {
     switch (view) {
@@ -18,6 +20,7 @@ function Dashboard() {
         return <Questions />
       case 'users':
         return <Users />;
+      
 
       default:
         return <p>Select a section</p>;
@@ -52,6 +55,7 @@ function Dashboard() {
         >
           Users
         </button>
+        
 
         <button className="logout" onClick={() => window.location.reload()}>
           Logout
