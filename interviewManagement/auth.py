@@ -91,6 +91,7 @@ def logout():
 @auth_bp.route('/can/login', methods=['POST'])
 def candidate_login():
     try:
+        # 1️⃣ Read request data
         data = request.get_json()
         candidate_id = data.get('candidateId')
         password = data.get('password')
@@ -98,18 +99,39 @@ def candidate_login():
         if not candidate_id or not password:
             return jsonify({"error": "candidateId and password are required"}), 400
 
+        # 2️⃣ DB collections
         db = current_app.db
-        candidate = db["users scheduler"].find_one({"candidateId": candidate_id})
+        user_collection = db["users scheduler"]
+        criteria_collection = db["criteria"]
 
+        # 3️⃣ Find candidate
+        candidate = user_collection.find_one({"candidateId": candidate_id})
         if not candidate or candidate.get("password") != password:
             return jsonify({"error": "Invalid credentials"}), 401
 
-        # JWT Tokens
+        # 4️⃣ Generate JWT tokens
         access_token = create_access_token(identity=candidate_id)
         refresh_token = create_refresh_token(identity=candidate_id)
 
+        # 5️⃣ Enrich interview data with criteria info
+        interviews_data = []
 
-        # Prepare response
+        for interview in candidate.get("interviews", []):
+            interview_name = interview.get("interview_name")
+
+            criteria = criteria_collection.find_one(
+                {"name": interview_name},
+                {"_id": 0, "time": 1, "valid_from": 1, "valid_to": 1}
+            )
+
+            interviews_data.append({
+                "interview_name": interview_name,
+                "time": criteria.get("time") if criteria else None,
+                "valid_from": criteria.get("valid_from") if criteria else None,
+                "valid_to": criteria.get("valid_to") if criteria else None
+            })
+
+        # 6️⃣ Prepare response
         response = make_response(jsonify({
             "message": "Login successful",
             "access_token": access_token,
@@ -118,16 +140,16 @@ def candidate_login():
                 "name": candidate.get("name"),
                 "email": candidate.get("email"),
                 "phone": candidate.get("phone"),
-                "interviews": candidate.get("interviews", [])
+                "interviews": interviews_data
             }
         }))
 
-        # 🔐 Set refresh token in HttpOnly cookie
+        # 7️⃣ Set refresh token in HttpOnly cookie
         response.set_cookie(
             'refresh_token',
             value=refresh_token,
-            httponly=True,   # Prevent JS access
-            secure=True,     # Send only via HTTPS
+            httponly=True,
+            secure=True,
             samesite='Strict',
             path='/auth/refresh'
         )
@@ -136,4 +158,3 @@ def candidate_login():
 
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-    
